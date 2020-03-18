@@ -1,11 +1,14 @@
 const router = require("express").Router();
 const db = require("../models");
 
+
 // const res = await fetch("/api/workouts", {
-router.post("/api/transaction", ({ body }, res) => {
-  Transaction.create(body)
-    .then(dbTransaction => {
-      res.json(dbTransaction);
+  // method: "POST",
+router.post("/api/workouts", ({ body }, res) => {
+  console.log(body);
+  db.Workout.create(body)
+    .then(dbWorkout => {
+      res.json(dbWorkout);
     })
     .catch(err => {
       res.status(400).json(err);
