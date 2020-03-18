@@ -5,14 +5,16 @@ fetch("/api/workouts/range")
     return response.json();
   })
   .then(data => {
-    populateChart(data);
+    newData = data.reverse();
+    console.log(newData);
+    populateChart(newData);
   });
 
 
 API.getWorkoutsInRange()
 
-  function generatePalette() {
-    const arr = [
+function generatePalette() {
+  const arr = [
     "#003f5c",
     "#2f4b7c",
     "#665191",
@@ -32,12 +34,19 @@ API.getWorkoutsInRange()
   ]
 
   return arr;
-  }
+}
 function populateChart(data) {
   let durations = duration(data);
   let pounds = calculateTotalWeight(data);
   let workouts = workoutNames(data);
   const colors = generatePalette();
+  const dates = getDateLabels(data);
+  let cardioData = cardioWorkoutDataByType(data);
+  let resistanceData = resistanceWorkoutDataByType(data);
+
+
+
+
 
   let line = document.querySelector("#canvas").getContext("2d");
   let bar = document.querySelector("#canvas2").getContext("2d");
@@ -47,15 +56,16 @@ function populateChart(data) {
   let lineChart = new Chart(line, {
     type: "line",
     data: {
-      labels: [
-        "Sunday",
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday"
-      ],
+      // labels: [
+      //   "Sunday",
+      //   "Monday",
+      //   "Tuesday",
+      //   "Wednesday",
+      //   "Thursday",
+      //   "Friday",
+      //   "Saturday"
+      // ],
+      labels: dates,
       datasets: [
         {
           label: "Workout Duration In Minutes",
@@ -85,6 +95,9 @@ function populateChart(data) {
             display: true,
             scaleLabel: {
               display: true
+            },
+            ticks: {
+              beginAtZero: true
             }
           }
         ]
@@ -95,15 +108,16 @@ function populateChart(data) {
   let barChart = new Chart(bar, {
     type: "bar",
     data: {
-      labels: [
-        "Sunday",
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday",
-      ],
+      // labels: [
+      //   "Sunday",
+      //   "Monday",
+      //   "Tuesday",
+      //   "Wednesday",
+      //   "Thursday",
+      //   "Friday",
+      //   "Saturday",
+      // ],
+      labels: dates,
       datasets: [
         {
           label: "Pounds",
@@ -160,7 +174,7 @@ function populateChart(data) {
     options: {
       title: {
         display: true,
-        text: "Excercises Performed"
+        text: "Type of xcercises Performed by type in (minutes)"
       }
     }
   });
@@ -189,13 +203,24 @@ function populateChart(data) {
 function duration(data) {
   let durations = [];
 
-  data.forEach(workout => {
-    workout.exercises.forEach(exercise => {
-      durations.push(exercise.duration);
-    });
+  data.forEach(workouts => {
+    durations.push(workouts.totalDuration);
   });
-
+  console.log(durations);
   return durations;
+}
+
+function getDateLabels(data) {
+  let dateList = [];
+  data.forEach(workouts => {
+    let dateFormat = workouts.day;
+    dateFormat = moment(dateFormat).format("DD-MM-YYYY");
+    console.log(dateFormat);
+    dateList.push(dateFormat);
+  });
+  console.log("dateList");
+  console.log(dateList);
+  return dateList;
 }
 
 function calculateTotalWeight(data) {
@@ -206,7 +231,7 @@ function calculateTotalWeight(data) {
       total.push(exercise.weight);
     });
   });
-
+  console.log(total);
   return total;
 }
 
@@ -218,6 +243,49 @@ function workoutNames(data) {
       workouts.push(exercise.name);
     });
   });
-  
+  console.log(workouts);
+  return workouts;
+}
+
+function cardioWorkoutDataByType(data) {
+  let workouts = [];
+  data.forEach(workout => {
+
+    workout.exercises.forEach(exercise => {
+      if (exercise.type === "cardio") {
+        console.log(exercise);
+        let exName = exercise.name;
+        let exDurations = exercise.duration;
+        workouts.push({ [exName]: exDurations });
+      }
+    });
+  });
+  console.log(workouts);
+  return workouts;
+}
+
+
+function resistanceWorkoutDataByType(data) {
+  let workouts = [];
+  data.forEach(workout => {
+    workout.exercises.forEach(exercise => {
+      if (exercise.type === "resistance") {
+        console.log(exercise);
+        let exName = exercise.name;
+        let exDurations = exercise.duration;
+        workouts.push({ [exName]: exDurations });
+      }
+    });
+
+    // workouts.reduce( function (Allworkouts, workout) {
+    //   if (workout[key] in Allworkouts[key]){
+    //     { workout[key] : 
+    //   }
+    // })
+
+    })
+
+
+  console.log(workouts);
   return workouts;
 }

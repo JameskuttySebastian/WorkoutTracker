@@ -17,7 +17,7 @@ router.post("/api/workouts", ({ body }, res) => {
 
 
 router.post("/api/workouts/range", ({ body }, res) => {
-  console.log(body);
+  // console.log(body);
   db.Workout.insertMany(body)
     .then(dbWorkout => {
       res.json(dbWorkout);
@@ -41,13 +41,13 @@ router.get("/api/workouts", (req, res) => {
 });
 
 // const res = await fetch(`/api/workouts/range`);
-router.get("/api/workouts/range", (req, res) =>{
-  db.Workout.find({})
+router.get("/api/workouts/range", (req, res) => {
+  db.Workout.find({}).sort('-day').limit(7)
   .then(dbWorkout => {
-      res.json(dbWorkout);
+    res.json(dbWorkout);
   })
   .catch(err => {
-      res.json(err);
+    res.json(err);
   });
 });
 
