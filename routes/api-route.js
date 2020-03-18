@@ -5,7 +5,7 @@ const db = require("../models");
 // const res = await fetch("/api/workouts", {
   // method: "POST",
 router.post("/api/workouts", ({ body }, res) => {
-  console.log(body);
+  // console.log(body);
   db.Workout.create(body)
     .then(dbWorkout => {
       res.json(dbWorkout);
@@ -15,10 +15,12 @@ router.post("/api/workouts", ({ body }, res) => {
     });
 });
 
-router.post("/api/transaction/bulk", ({ body }, res) => {
-  Transaction.insertMany(body)
-    .then(dbTransaction => {
-      res.json(dbTransaction);
+
+router.post("/api/workouts/range", ({ body }, res) => {
+  console.log(body);
+  db.Workout.insertMany(body)
+    .then(dbWorkout => {
+      res.json(dbWorkout);
     })
     .catch(err => {
       res.status(400).json(err);
@@ -38,6 +40,16 @@ router.get("/api/workouts", (req, res) => {
     });
 });
 
+// const res = await fetch(`/api/workouts/range`);
+router.get("/api/workouts/range", (req, res) =>{
+  db.Workout.find({})
+  .then(dbWorkout => {
+      res.json(dbWorkout);
+  })
+  .catch(err => {
+      res.json(err);
+  });
+});
 
 // const res = await fetch("/api/workouts/" + id, {
 
