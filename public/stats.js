@@ -38,12 +38,17 @@ function generatePalette() {
 function populateChart(data) {
   let durations = duration(data);
   let pounds = calculateTotalWeight(data);
-  let workouts = workoutNames(data);
+  // let workouts = workoutNames(data); //not in use
   const colors = generatePalette();
   const dates = getDateLabels(data);
-  let cardioData = cardioWorkoutDataByType(data);
+// section to get resistance workouts by type and total for each
   let resistanceData = resistanceWorkoutDataByType(data);
-
+  let resistanceDataName = resistanceData.map(({ name }) => name);
+  let resistanceDataDuration = resistanceData.map(({ duration }) => duration);
+// section to get rcardio workouts by type and total for each
+  let cardioData = cardioWorkoutDataByType(data);
+  let cardioDataName = cardioData.map(({ name }) => name);
+  let cardioDataDuration = cardioData.map(({ duration }) => duration);
 
 
 
@@ -53,6 +58,7 @@ function populateChart(data) {
   let pie = document.querySelector("#canvas3").getContext("2d");
   let pie2 = document.querySelector("#canvas4").getContext("2d");
 
+//Only labels changed from days to date
   let lineChart = new Chart(line, {
     type: "line",
     data: {
@@ -104,7 +110,7 @@ function populateChart(data) {
       }
     }
   });
-
+//Only labels changed from days to date
   let barChart = new Chart(bar, {
     type: "bar",
     data: {
@@ -158,58 +164,57 @@ function populateChart(data) {
       }
     }
   });
-
+// changed to show resistance exercises only
   let pieChart = new Chart(pie, {
     type: "pie",
     data: {
-      labels: workouts,
+      labels: resistanceDataName,
       datasets: [
         {
-          label: "Excercises Performed",
+          label: "Resistance Excercises Performed",
           backgroundColor: colors,
-          data: durations
+          data: resistanceDataDuration
         }
       ]
     },
     options: {
       title: {
         display: true,
-        text: "Type of xcercises Performed by type in (minutes)"
+        text: "Resistance Excercises Performed in (minutes)"
       }
     }
   });
-
+// changed to show cardio exercises only
   let donutChart = new Chart(pie2, {
     type: "doughnut",
     data: {
-      labels: workouts,
+      labels: cardioDataName,
       datasets: [
         {
-          label: "Excercises Performed",
+          label: "Cardio Excercises Performed",
           backgroundColor: colors,
-          data: pounds
+          data: cardioDataDuration
         }
       ]
     },
     options: {
       title: {
         display: true,
-        text: "Excercises Performed"
+        text: "Cardio Excercises Performed in (minutes)"
       }
     }
   });
 }
-
+// No change from original function
 function duration(data) {
   let durations = [];
-
   data.forEach(workouts => {
     durations.push(workouts.totalDuration);
   });
   console.log(durations);
   return durations;
 }
-
+// New function to get all the dates and correct format
 function getDateLabels(data) {
   let dateList = [];
   data.forEach(workouts => {
@@ -223,9 +228,9 @@ function getDateLabels(data) {
   return dateList;
 }
 
+// No change in this function
 function calculateTotalWeight(data) {
   let total = [];
-
   data.forEach(workout => {
     workout.exercises.forEach(exercise => {
       total.push(exercise.weight);
@@ -234,7 +239,7 @@ function calculateTotalWeight(data) {
   console.log(total);
   return total;
 }
-
+// This function is not in use any more
 function workoutNames(data) {
   let workouts = [];
 
@@ -250,18 +255,24 @@ function workoutNames(data) {
 function cardioWorkoutDataByType(data) {
   let workouts = [];
   data.forEach(workout => {
-
     workout.exercises.forEach(exercise => {
       if (exercise.type === "cardio") {
         console.log(exercise);
-        let exName = exercise.name;
-        let exDurations = exercise.duration;
-        workouts.push({ [exName]: exDurations });
+        // let exName = exercise.name;
+        // let exDurations = exercise.duration;
+        workouts.push({ name : exercise.name, duration : exercise.duration});
       }
     });
   });
-  console.log(workouts);
-  return workouts;
+
+  const reducedWorkouts = Object.values(workouts.reduce((c, {name,duration}) => {
+    c[name] = c[name] || {name,duration: 0};
+    c[name].duration += duration;
+    return c;
+  }, {}));  
+
+  console.log(reducedWorkouts);
+  return reducedWorkouts;
 }
 
 
@@ -271,21 +282,18 @@ function resistanceWorkoutDataByType(data) {
     workout.exercises.forEach(exercise => {
       if (exercise.type === "resistance") {
         console.log(exercise);
-        let exName = exercise.name;
-        let exDurations = exercise.duration;
-        workouts.push({ [exName]: exDurations });
+        // let exName = exercise.name;
+        // let exDurations = exercise.duration;
+        // workouts.push({ [exName]: exDurations });
+        workouts.push({ name : exercise.name, duration : exercise.duration});
       }
     });
-
-    // workouts.reduce( function (Allworkouts, workout) {
-    //   if (workout[key] in Allworkouts[key]){
-    //     { workout[key] : 
-    //   }
-    // })
-
-    })
-
-
-  console.log(workouts);
-  return workouts;
+  });
+  const reducedWorkouts = Object.values(workouts.reduce((c, {name,duration}) => {
+    c[name] = c[name] || {name,duration: 0};
+    c[name].duration += duration;
+    return c;
+  }, {}));  
+  console.log(reducedWorkouts);
+  return reducedWorkouts;
 }

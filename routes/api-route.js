@@ -42,7 +42,7 @@ router.get("/api/workouts", (req, res) => {
 
 // const res = await fetch(`/api/workouts/range`);
 router.get("/api/workouts/range", (req, res) => {
-  db.Workout.find({}).sort('-day').limit(7)
+  db.Workout.find({}).sort('-day').limit(10)
   .then(dbWorkout => {
     res.json(dbWorkout);
   })
