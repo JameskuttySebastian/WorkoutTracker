@@ -1,7 +1,7 @@
 let mongoose = require("mongoose");
 let db = require("../models");
 
-mongoose.connect("mongodb://localhost/workout", {
+mongoose.connect("mongodb://mongodb:mongodb1@ds031777.mlab.com:31777/heroku_k5dmjct4", {
   useNewUrlParser: true,
   useFindAndModify: false
 });
@@ -12,6 +12,7 @@ let workoutSeed = [
     exercises: [
       {
         type: "resistance",
+        
         name: "Bicep Curl",
         duration: 20,
         weight: 100,

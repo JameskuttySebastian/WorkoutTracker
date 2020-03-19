@@ -12,6 +12,10 @@ A consumer will reach their fitness goals quicker when they track their workout 
 -  Github
 > https://github.com/JameskuttySebastian/ASSIGNMENT17_WorkoutTracker
 
+-  Heroku
+> https://evening-bayou-84404.herokuapp.com/?id=5e7320869400ab0017b7bacc
+
+
 ![Home Page](./img/Home.PNG)
 
 This page is for viewing last created exercise and adding exercises
