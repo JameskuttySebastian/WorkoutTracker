@@ -27,6 +27,7 @@ router.post("/api/workouts/range", ({ body }, res) => {
     });
 });
 
+// get all workouts
 //res = await fetch("/api/workouts");
 router.get("/api/workouts", (req, res) => {
   db.Workout.find({})
