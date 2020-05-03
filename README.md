@@ -15,6 +15,14 @@ A consumer will reach their fitness goals quicker when they track their workout 
 -  Heroku
 > https://evening-bayou-84404.herokuapp.com/?id=5e7320869400ab0017b7bacc
 
+## Technologies used
+
+- HTML
+- CSS
+- Express
+- Node
+- MongoDB
+
 ### Home page
 This page is for viewing last created exercise and adding exercises. There are two options
 
@@ -39,4 +47,5 @@ This page is for viewing exercise history in different angle;
 
 
 ![Dashboard Page](./img/Dashboard.PNG)
+
 
